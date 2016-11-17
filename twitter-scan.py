@@ -37,7 +37,6 @@ def db_connect():
 
 def runBot():
     my_bot = TwitterBot()
-    my_bot.sync_follows()
 
     my_bot.auto_unfollow_nonfollowers()
     my_bot.auto_follow("tshirthustle")
@@ -50,7 +49,6 @@ def runBot():
 
 def runRetreetBot():
     my_bot = TwitterBot('tshirthustle-config.txt')
-    my_bot.sync_follows()
 
     my_bot.auto_unfollow_nonfollowers()
     my_bot.auto_follow("Looking For Tee", count=5)
