@@ -37,9 +37,11 @@ def db_connect():
 
 def runBot():
     my_bot = TwitterBot()
+    my_bot.sync_follows()
 
     my_bot.auto_unfollow_nonfollowers()
     my_bot.auto_follow("tshirthustle")
+    my_bot.auto_follow("Looking For Tee", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=10)
     my_bot.auto_rt("tshirts", count=10)
@@ -48,9 +50,10 @@ def runBot():
 
 def runRetreetBot():
     my_bot = TwitterBot('tshirthustle-config.txt')
+    my_bot.sync_follows()
 
     my_bot.auto_unfollow_nonfollowers()
-    my_bot.auto_follow("tshirthustle")
+    my_bot.auto_follow("Looking For Tee", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=5)
     my_bot.auto_rt("Looking For", count=5)
