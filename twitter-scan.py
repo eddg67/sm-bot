@@ -1,5 +1,6 @@
 # Import the necessary methods from tweepy library
 from pymongo import MongoClient
+from TwitterFollowBot import TwitterBot
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -11,9 +12,9 @@ import random
 
 # Variables that contains the user credentials to access Twitter API
 access_token = "2871836001-ZhYub5oqkY1C2AujVg0l01WZh4IJIMZ4Y9KwHFh" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "xJ8HtjI4FRVp5DJ5hLIzIGPsdp0cay7nhHZN3yMDERAGe" #"ScV3HoMNMj62bXkXNxXy9qgRNnLY6hCzkIRphVAWpwi8O"
-consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" uUHFPmlnNVwMw8LD0U9nWET60"
-consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #"jh4IJpA6TaPBvZDH5ulSUIbVPL5kHJ967CtnMnC9OxI5QyRH15"
+access_token_secret = "xJ8HtjI4FRVp5DJ5hLIzIGPsdp0cay7nhHZN3yMDERAGe" #
+consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
+consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
 tweet_sent_count = 0
 tweets_sent_text = []
@@ -28,10 +29,32 @@ sent_product_link = False
 
 def db_connect():
     global client
-    if client == False:
+    if not client:
         client = MongoClient('localhost', 27017)
 
     return client
+
+
+def runBot():
+    my_bot = TwitterBot()
+
+    my_bot.auto_unfollow_nonfollowers()
+    my_bot.auto_follow("tshirthustle")
+    my_bot.auto_follow_followers()
+    my_bot.auto_fav("tshirthustle", count=10)
+    my_bot.auto_rt("tshirts", count=10)
+    my_bot.auto_rt("Need Tees", count=10)
+
+
+def runRetreetBot():
+    my_bot = TwitterBot('tshirthustle-config.txt')
+
+    my_bot.auto_unfollow_nonfollowers()
+    my_bot.auto_follow("tshirthustle")
+    my_bot.auto_follow_followers()
+    my_bot.auto_fav("tshirthustle", count=5)
+    my_bot.auto_rt("Looking For", count=5)
+    my_bot.auto_rt("Need Tees", count=5)
 
 
 def set_trends():
@@ -65,7 +88,7 @@ def extract_link(text):
 
 
 def create_product_lk(prefix, text):
-    global top_trends
+    global top_trends, client
     client = db_connect()
     db = client.ss_products
     random_record = db.products.aggregate([{'$sample': {'size': 1}}])
@@ -75,7 +98,6 @@ def create_product_lk(prefix, text):
 
     link = ' http://tshirthustle.com/detail/' +product['productId'] + ' '
     content = prefix + link + ' '.join(top_trends)
-    print content
 
     return content
 
@@ -87,11 +109,11 @@ def send_tweet(text):
                 'Have U Checked TSHIRTHUSTLE.COM?', 'Visit TSHIRTHUSTLE.COM Today ',
                 'TSHIRTHUSTLE.COM Sale Today', 'TSHIRTHUSTLE.COM Anyone? ']
 
-    if sent_product_link :
+    if sent_product_link:
         text = prefixes[random.randrange(len(prefixes))] + text
-        sent_product_link = True
     else:
         text = create_product_lk(prefixes[random.randrange(len(prefixes))], text)
+        sent_product_link = True
 
     print len(text)
     text = text[:129]
@@ -168,6 +190,8 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-
+    runRetreetBot()
+    runBot()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=['tshirt', 'tees', 'tee-shirt', 'shirts', 'tshirthustle'])
+    stream.filter(track=['tshirt', 'tees', 'tee-shirt', 'shirts', 'tshirthustle', 'need tee', 'looking for'])
+
