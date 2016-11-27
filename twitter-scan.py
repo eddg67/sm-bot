@@ -106,9 +106,10 @@ def create_product_lk(prefix, text):
 def send_tweet(text):
     global tweet_sent_count, tweets_sent_text, startTime, fileHandle, sent_product_link
 
-    prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out ',
-                'Have U Checked TSHIRTHUSTLE.COM?', 'Visit TSHIRTHUSTLE.COM Today ',
-                'TSHIRTHUSTLE.COM Sale Today', 'TSHIRTHUSTLE.COM Anyone? ']
+    prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
+                'Somebody Say http://tshirthustle.com ?'
+                'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
+                'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ']
 
     if sent_product_link:
         text = prefixes[random.randrange(len(prefixes))] + text
@@ -194,5 +195,6 @@ if __name__ == '__main__':
     runRetreetBot()
     runBot()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=['tshirt', 'tees', 'tee-shirt', 'shirts', 'tshirthustle', 'need tee', 'looking for'])
+    stream.filter(track=['tshirt', 'tees', 'tee-shirt', 'shirts', 'tshirthustle',
+                         'need tee', 'looking for tees', 'looking for tshirt'])
 
