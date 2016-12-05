@@ -195,6 +195,6 @@ if __name__ == '__main__':
     runRetreetBot()
     runBot()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=['tshirt', 'tees', 'tee-shirt', 'shirts', 'tshirthustle',
-                         'need tee', 'looking for tees', 'looking for tshirt'])
+    stream.filter(track=['tshirt', 'tee-shirt', 'shirts', 'tshirthustle',
+                         'need tee', 'looking for tshirt', 'looking for t-shirt'])
 
