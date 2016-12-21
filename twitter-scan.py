@@ -25,6 +25,7 @@ fileHandle = open('tweets-dialog.txt', 'w')
 client = False
 timeBetween = 500
 sent_product_link = False
+SCREEN_NAME = "tshirthustle"
 
 
 def db_connect():
@@ -43,6 +44,7 @@ def runBot():
     my_bot.auto_follow("Looking For Tee", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=10)
+    my_bot.auto_fav("Abby Baby", count=10)
     my_bot.auto_rt("tshirts", count=10)
     my_bot.auto_rt("Need Tees", count=10)
 
@@ -51,16 +53,29 @@ def runRetreetBot():
     my_bot = TwitterBot('tshirthustle-config.txt')
 
     my_bot.auto_unfollow_nonfollowers()
-    my_bot.auto_follow("Looking For Tee", count=5)
+    my_bot.auto_follow("Looking For Tees", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=5)
-    my_bot.auto_rt("Looking For", count=5)
+    my_bot.auto_rt("Looking For Tees", count=5)
     my_bot.auto_rt("Need Tees", count=5)
+
+
+def unfollow():
+    count = 0
+    followers = api.followers_ids(SCREEN_NAME)
+    friends = api.friends_ids(SCREEN_NAME)
+    for f in friends:
+        if f not in followers:
+                count += 1
+                api.destroy_friendship(f)
+                if count > 10:
+                    break
 
 
 def set_trends():
     global top_trends
     trends1 = api.trends_place(23424977)
+
     data = trends1[0]
     trends = data['trends']
     top_trends = [trend['name'] for trend in trends]
@@ -88,17 +103,20 @@ def extract_link(text):
     return ''
 
 
-def create_product_lk(prefix, text):
+def create_product_lk():
     global top_trends, client
     client = db_connect()
     db = client.ss_products
-    random_record = db.products.aggregate([{'$sample': {'size': 1}}])
+    random_record = db.products.aggregate([
+        {'$match': {'Name': re.compile('T Shirt', re.IGNORECASE)}},
+        {'$sample': {'size': 1}}
+    ])
 
     for doc in random_record:
         product = doc
 
     link = ' http://tshirthustle.com/detail/' +product['productId'] + ' '
-    content = prefix + link + ' '.join(top_trends)
+    content = product['Name'] + link + ' '.join(top_trends)
 
     return content
 
@@ -114,7 +132,7 @@ def send_tweet(text):
     if sent_product_link:
         text = prefixes[random.randrange(len(prefixes))] + text
     else:
-        text = create_product_lk(prefixes[random.randrange(len(prefixes))], text)
+        text = create_product_lk()
         sent_product_link = True
 
     print len(text)
@@ -192,9 +210,10 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
+    unfollow()
     runRetreetBot()
     runBot()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=['tshirt', 'tee-shirt', 'shirts', 'tshirthustle',
-                         'need tee', 'looking for tshirt', 'looking for t-shirt'])
+    stream.filter(track=['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt',
+                         'need tees', 'looking for tshirt', 'looking for t-shirt'])
 
