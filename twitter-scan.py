@@ -40,22 +40,46 @@ def runBot():
     my_bot = TwitterBot()
 
     my_bot.auto_unfollow_nonfollowers()
-    my_bot.auto_follow("tshirthustle")
-    my_bot.auto_follow("Looking For Tee", count=5)
+    my_bot.auto_follow("tshirt")
+    my_bot.auto_follow("Shopping For Tee", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=10)
     my_bot.auto_fav("Abby Baby", count=10)
+    my_bot.auto_fav("LMAO", count=10)
     my_bot.auto_rt("tshirts", count=10)
     my_bot.auto_rt("Need Tees", count=10)
+    my_bot.auto_rt("shopping", count=10)
+    my_bot.auto_rt("funny", count=10)
+    my_bot.auto_rt("tshirthustle", count=10)
+
+    my_bot = TwitterBot('bwaters-config.txt')
+    my_bot.auto_follow_followers()
+    my_bot.auto_unfollow_nonfollowers()
+    my_bot.auto_follow("Red Agent")
+    my_bot.auto_follow("Comic")
+    my_bot.auto_fav("nerd gear", count=10)
+    my_bot.auto_follow("Looking For Tee", count=5)
+    my_bot.auto_fav("tshirthustle", count=10)
+    my_bot.auto_fav("@BritneyWaters12", count=10)
+    my_bot.auto_rt("@BritneyWaters12", count=10)
+    my_bot.auto_rt("Need Tees", count=10)
+    my_bot.auto_rt("Gamer", count=10)
+    my_bot.auto_rt("tshirthustle", count=10)
+
 
 
 def runRetreetBot():
     my_bot = TwitterBot('tshirthustle-config.txt')
 
     my_bot.auto_unfollow_nonfollowers()
+    my_bot.auto_follow("t-shirts", count=5)
+    my_bot.auto_follow("tshirts", count=5)
+    my_bot.auto_follow("funny tees", count=5)
     my_bot.auto_follow("Looking For Tees", count=5)
     my_bot.auto_follow_followers()
     my_bot.auto_fav("tshirthustle", count=5)
+    my_bot.auto_fav("Cool T-Shirts", count=5)
+    my_bot.auto_fav("Shopping For Tee", count=5)
     my_bot.auto_rt("Looking For Tees", count=5)
     my_bot.auto_rt("Need Tees", count=5)
 
@@ -65,11 +89,14 @@ def unfollow():
     followers = api.followers_ids(SCREEN_NAME)
     friends = api.friends_ids(SCREEN_NAME)
     for f in friends:
+        api.create_friendship(f)
         if f not in followers:
                 count += 1
                 api.destroy_friendship(f)
                 if count > 10:
                     break
+
+
 
 
 def set_trends():
@@ -215,5 +242,5 @@ if __name__ == '__main__':
     runBot()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
     stream.filter(track=['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt',
-                         'need tees', 'looking for tshirt', 'looking for t-shirt'])
+                         'need tees', 'looking for tshirt', 'looking for t-shirt', 'gift idea'])
 
