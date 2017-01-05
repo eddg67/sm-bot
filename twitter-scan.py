@@ -47,7 +47,7 @@ def runbot(my_bot):
     my_bot.sync_follows()
 
     try:
-        my_bot.auto_unfollow_nonfollowers(count=10)
+       # my_bot.auto_unfollow_nonfollowers()
         my_bot.auto_follow_followers()
 
         my_bot.auto_fav("tshirthustle", count=5)
@@ -87,8 +87,8 @@ def runRetreetBot():
 
     my_bot.sync_follows()
 
-    my_bot.auto_unfollow_nonfollowers(count=10)
     my_bot.auto_follow_followers()
+    #my_bot.auto_unfollow_nonfollowers()
 
     my_bot.auto_fav("tshirthustle", count=5)
 
