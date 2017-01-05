@@ -58,8 +58,8 @@ def runbot(my_bot):
                 index = random.randrange(len(track))
 
             my_bot.auto_follow(track[index])
-            my_bot.auto_rt(track[index], count=10)
-            my_bot.auto_fav(track[index], count=10)
+            my_bot.auto_rt(track[index], count=index)
+            my_bot.auto_fav(track[index], count=index)
     except IndexError:
         pass
 
@@ -97,8 +97,8 @@ def runRetreetBot():
             index = random.randrange(len(track))
 
         my_bot.auto_follow(track[index])
-        my_bot.auto_rt(track[index], count=5)
-        my_bot.auto_fav(track[index], count=5)
+        my_bot.auto_rt(track[index], count=index)
+        my_bot.auto_fav(track[index], count=index)
 
 
 def unfollow():
@@ -255,7 +255,7 @@ if __name__ == '__main__':
     api = API(auth)
     set_trends()
     #unfollow()
-    runRetreetBot()
+    runbot(TwitterBot('tshirthustle-config.txt'))
     runbot(TwitterBot())
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
     stream.filter(track=track)
