@@ -11,8 +11,8 @@ import time
 import random
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-V4EHCLNryP9hbmeOHXn6G9dCBTVv2U5JdmpuJ0T" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "qaQNUjUAAYWvwpDt7X4RqHgNM31oQYjREKMtAGHxbQugN" #
+access_token = "2871836001-dLTC7L9YmKAoPSVqf1anXirRjKpNgB3P2frPBEh" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "JJXT7X90JOKZYCx7WwpjhFuWbkczHZpRYgAjjyhwP9VIf" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -27,6 +27,9 @@ timeBetween = 500
 sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
+track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
+         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'funny', 'shopping', 'BritneyWaters12', 'abbybaby203']
+
 
 def db_connect():
     global client
@@ -36,21 +39,31 @@ def db_connect():
     return client
 
 
-def runBot():
-    my_bot = TwitterBot()
+def runbot(my_bot):
+    global track
+    index = random.randrange(len(track))
+    last_index = 0
 
-    my_bot.auto_unfollow_nonfollowers()
-    my_bot.auto_follow("tshirt")
-    my_bot.auto_follow("Shopping For Tee", count=5)
-    my_bot.auto_follow_followers()
-    my_bot.auto_fav("tshirthustle", count=10)
-    my_bot.auto_fav("Abby Baby", count=10)
-    my_bot.auto_fav("LMAO", count=10)
-    my_bot.auto_rt("tshirts", count=10)
-    my_bot.auto_rt("Need Tees", count=10)
-    my_bot.auto_rt("shopping", count=10)
-    my_bot.auto_rt("funny", count=10)
-    my_bot.auto_rt("tshirthustle", count=10)
+    my_bot.sync_follows()
+
+    try:
+        my_bot.auto_unfollow_nonfollowers(count=10)
+        my_bot.auto_follow_followers()
+
+        my_bot.auto_fav("tshirthustle", count=5)
+        my_bot.auto_rt("tshirthustle", count=5)
+
+        for x in range(0, 3):
+            if last_index == index:
+                index = random.randrange(len(track))
+
+            my_bot.auto_follow(track[index])
+            my_bot.auto_rt(track[index], count=10)
+            my_bot.auto_fav(track[index], count=10)
+    except IndexError:
+        pass
+
+
 
     #my_bot.auto_follow_followers()
     #my_bot.auto_unfollow_nonfollowers()
@@ -66,21 +79,26 @@ def runBot():
     #my_bot.auto_rt("tshirthustle", count=10)
 
 
-
 def runRetreetBot():
+    global track
+    index = random.randrange(len(track))
+    last_index = 0
     my_bot = TwitterBot('tshirthustle-config.txt')
 
-    my_bot.auto_unfollow_nonfollowers()
-    my_bot.auto_follow("t-shirts", count=5)
-    my_bot.auto_follow("tshirts", count=5)
-    my_bot.auto_follow("funny tees", count=5)
-    my_bot.auto_follow("Looking For Tees", count=5)
+    my_bot.sync_follows()
+
+    my_bot.auto_unfollow_nonfollowers(count=10)
     my_bot.auto_follow_followers()
+
     my_bot.auto_fav("tshirthustle", count=5)
-    my_bot.auto_fav("Cool T-Shirts", count=5)
-    my_bot.auto_fav("Shopping For Tee", count=5)
-    my_bot.auto_rt("Looking For Tees", count=5)
-    my_bot.auto_rt("Need Tees", count=5)
+
+    for x in range(0, 3):
+        if last_index == index:
+            index = random.randrange(len(track))
+
+        my_bot.auto_follow(track[index])
+        my_bot.auto_rt(track[index], count=5)
+        my_bot.auto_fav(track[index], count=5)
 
 
 def unfollow():
@@ -88,14 +106,15 @@ def unfollow():
     followers = api.followers_ids(SCREEN_NAME)
     friends = api.friends_ids(SCREEN_NAME)
     for f in friends:
-        api.create_friendship(f)
-        if f not in followers:
+        try:
+            api.create_friendship(f)
+            if f not in followers:
                 count += 1
                 api.destroy_friendship(f)
                 if count > 10:
                     break
-
-
+        except IndexError:
+            pass
 
 
 def set_trends():
@@ -151,7 +170,6 @@ def send_tweet(text):
     global tweet_sent_count, tweets_sent_text, startTime, fileHandle, sent_product_link
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
-                'Somebody Say http://tshirthustle.com ?'
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
                 'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ']
 
@@ -236,10 +254,9 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-    unfollow()
+    #unfollow()
     runRetreetBot()
-    runBot()
+    runbot(TwitterBot())
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt',
-                         'need tees', 'looking for tshirt', 'looking for t-shirt', 'gift idea'])
+    stream.filter(track=track)
 
