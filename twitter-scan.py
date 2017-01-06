@@ -17,6 +17,7 @@ consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
 tweet_sent_count = 0
+tweet_max = 3
 tweets_sent_text = []
 top_trends = []
 api = ""
@@ -28,7 +29,7 @@ sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
 track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
-         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'funny', 'shopping', 'BritneyWaters12', 'abbybaby203']
+         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'shopping 4 t-shirts', 'BritneyWaters12', 'abbybaby203']
 
 
 def db_connect():
@@ -47,7 +48,6 @@ def runbot(my_bot):
     my_bot.sync_follows()
 
     try:
-       # my_bot.auto_unfollow_nonfollowers()
         my_bot.auto_follow_followers()
 
         my_bot.auto_fav("tshirthustle", count=5)
@@ -60,10 +60,11 @@ def runbot(my_bot):
             my_bot.auto_follow(track[index])
             my_bot.auto_rt(track[index], count=index)
             my_bot.auto_fav(track[index], count=index)
+            wait()
+
+        #my_bot.auto_unfollow_nonfollowers()
     except IndexError:
         pass
-
-
 
     #my_bot.auto_follow_followers()
     #my_bot.auto_unfollow_nonfollowers()
@@ -77,28 +78,6 @@ def runbot(my_bot):
     #my_bot.auto_rt("Need Tees", count=10)
     #my_bot.auto_rt("Gamer", count=10)
     #my_bot.auto_rt("tshirthustle", count=10)
-
-
-def runRetreetBot():
-    global track
-    index = random.randrange(len(track))
-    last_index = 0
-    my_bot = TwitterBot('tshirthustle-config.txt')
-
-    my_bot.sync_follows()
-
-    my_bot.auto_follow_followers()
-    #my_bot.auto_unfollow_nonfollowers()
-
-    my_bot.auto_fav("tshirthustle", count=5)
-
-    for x in range(0, 3):
-        if last_index == index:
-            index = random.randrange(len(track))
-
-        my_bot.auto_follow(track[index])
-        my_bot.auto_rt(track[index], count=index)
-        my_bot.auto_fav(track[index], count=index)
 
 
 def unfollow():
@@ -160,14 +139,14 @@ def create_product_lk():
     for doc in random_record:
         product = doc
 
-    link = ' http://tshirthustle.com/detail/' +product['productId'] + ' '
-    content = product['Name'] + link + ' '.join(top_trends)
+    link = 'http://tshirthustle.com/detail/' +product['productId'] + ' '
+    content = link + product['Name'] + ' '.join(top_trends)
 
     return content
 
 
 def send_tweet(text):
-    global tweet_sent_count, tweets_sent_text, startTime, fileHandle, sent_product_link
+    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
@@ -190,12 +169,31 @@ def send_tweet(text):
         print 'Sending Tweet\n'
         tweets_sent_text.append(text)
         api.update_status(status=text)
-        tweet_sent_count += 1
+        increment()
+        wait()
         startTime = time.time()
-        if tweet_sent_count >= 3:
+        if tweet_count >= tweet_max:
             fileHandle.close()
             exit()  # Tweet every 15 minutes
     return True
+
+
+def wait():
+    # type: () -> object
+    min_time = 10
+    max_time = 80
+    if min_time > max_time:
+        temp = min_time
+        min_time = max_time
+        max_time = temp
+
+    wait_time = random.randint(min_time, max_time)
+
+    if wait_time > 0:
+        print("Choosing time between %d and %d - waiting %d seconds before action" % (min_time, max_time, wait_time))
+        time.sleep(wait_time)
+
+    return wait_time
 
 
 # This is a basic listener that just prints received tweets to stdout.
@@ -225,15 +223,12 @@ class StdOutListener(StreamListener):
             try:
                 if tweet['retweeted']:
                     tweets_data.append(tweet)
-                    increment()
                     send_tweet(tweet["text"])
                 elif tweet['favorited']:
                     tweets_data.append(tweet)
-                    increment()
                     send_tweet(tweet["text"])
                 elif word_in_text('TSHIRTHUSTLE', tweet['text']):
                     tweets_data.append(tweet)
-                    increment()
                     send_tweet(tweet["text"])
             except IndexError:
                 pass
@@ -256,7 +251,9 @@ if __name__ == '__main__':
     set_trends()
     #unfollow()
     runbot(TwitterBot('tshirthustle-config.txt'))
+    wait()
     runbot(TwitterBot())
+    wait()
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
     stream.filter(track=track)
 
