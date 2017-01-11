@@ -29,7 +29,7 @@ sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
 track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
-         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'shopping 4 t-shirts', 'BritneyWaters12', 'abbybaby203']
+         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'shopping 4 t-shirts', 'cos-play']
 
 
 def db_connect():
