@@ -9,10 +9,11 @@ import json
 import re
 import time
 import random
+import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-dLTC7L9YmKAoPSVqf1anXirRjKpNgB3P2frPBEh" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "JJXT7X90JOKZYCx7WwpjhFuWbkczHZpRYgAjjyhwP9VIf" #
+access_token = "2871836001-gq2L0XN28Vaakbq7ydTOXM3FsYFEfrwxXuItTdg" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "MZhKeFpiEHZTDK4Fgno6hRXDKDmmW6GumDwFI7RfEfEEw" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -62,22 +63,9 @@ def runbot(my_bot):
             my_bot.auto_fav(track[index], count=index)
             wait()
 
-        #my_bot.auto_unfollow_nonfollowers()
+        bot_unfollow(my_bot)
     except IndexError:
         pass
-
-    #my_bot.auto_follow_followers()
-    #my_bot.auto_unfollow_nonfollowers()
-    #my_bot.auto_follow("Red Agent")
-    #my_bot.auto_follow("Comic")
-    #my_bot.auto_fav("nerd gear", count=10)
-    #my_bot.auto_follow("Looking For Tee", count=5)
-    #my_bot.auto_fav("tshirthustle", count=10)
-    #my_bot.auto_fav("@BritneyWaters12", count=10)
-    #my_bot.auto_rt("@BritneyWaters12", count=10)
-    #my_bot.auto_rt("Need Tees", count=10)
-    #my_bot.auto_rt("Gamer", count=10)
-    #my_bot.auto_rt("tshirthustle", count=10)
 
 
 def unfollow():
@@ -94,6 +82,15 @@ def unfollow():
                     break
         except IndexError:
             pass
+
+
+def bot_unfollow(my_bot):
+    my_bot.sync_follows()
+
+    try:
+        my_bot.auto_unfollow_nonfollowers()
+    except IndexError:
+        pass
 
 
 def set_trends():
@@ -249,11 +246,17 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-    #unfollow()
+
+    #print 'Argument List:', str(sys.argv)
+
     runbot(TwitterBot('tshirthustle-config.txt'))
     wait()
     runbot(TwitterBot())
     wait()
+    bot_unfollow(TwitterBot('tshirthustle-config.txt'))
+    bot_unfollow(TwitterBot())
+    runbot(TwitterBot('bwaters-config.txt'))
+
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
     stream.filter(track=track)
 
