@@ -63,7 +63,7 @@ def runbot(my_bot):
             my_bot.auto_fav(track[index], count=index)
             wait()
 
-        bot_unfollow(my_bot)
+        #bot_unfollow(my_bot)
     except IndexError:
         pass
 
@@ -171,7 +171,7 @@ def send_tweet(text):
         startTime = time.time()
         if tweet_count >= tweet_max:
             fileHandle.close()
-            bot_unfollow(TwitterBot())
+            #bot_unfollow(TwitterBot())
             exit()  # Tweet every 15 minutes
     return True
 
@@ -254,9 +254,11 @@ if __name__ == '__main__':
     wait()
     runbot(TwitterBot())
     wait()
-   # bot_unfollow(TwitterBot('tshirthustle-config.txt'))
-    #bot_unfollow(TwitterBot())
+
     runbot(TwitterBot('bwaters-config.txt'))
+
+    # bot_unfollow(TwitterBot('tshirthustle-config.txt'))
+    # bot_unfollow(TwitterBot())
 
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
     stream.filter(track=track)
