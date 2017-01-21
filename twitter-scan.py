@@ -273,11 +273,12 @@ if __name__ == '__main__':
     print 'Argument List:', str(sys.argv)
 
     if len(sys.argv) > 1:
-        if sys.argv[2] == 'follow':
+        print sys.argv[1]
+        if sys.argv[1] == 'follow':
             process_autofollow()
-        elif sys.argv[2] == 'unfollow':
+        elif sys.argv[1] == 'unfollow':
             process_unfollower()
-        elif sys.argv[2] == 'stream':
+        elif sys.argv[1] == 'stream':
             process_stream()
         else:
             process_stream()
