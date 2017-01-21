@@ -63,7 +63,6 @@ def runbot(my_bot):
             my_bot.auto_fav(track[index], count=index)
             wait()
 
-        #bot_unfollow(my_bot)
     except IndexError:
         pass
 
@@ -94,7 +93,7 @@ def bot_unfollow(my_bot):
 
 
 def set_trends():
-    global top_trends
+    global top_trends, api
     trends1 = api.trends_place(23424977)
 
     data = trends1[0]
@@ -143,7 +142,7 @@ def create_product_lk():
 
 
 def send_tweet(text):
-    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max
+    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max,api
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
@@ -194,6 +193,33 @@ def wait():
     return wait_time
 
 
+def process_unfollower():
+    config = ['tshirthustle-config.txt','bwaters-config.txt']
+    bot_unfollow(TwitterBot())
+    for item in config:
+        bot_unfollow(TwitterBot(item))
+        wait()
+
+
+def process_autofollow():
+    config = ['tshirthustle-config.txt', 'bwaters-config.txt']
+    runbot(TwitterBot())
+    for item in config:
+        runbot(TwitterBot(item))
+        wait()
+
+
+def process_stream():
+    global api
+    l = StdOutListener()
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = Stream(auth, l)
+    api = API(auth)
+    set_trends()
+    stream.filter(track=track)
+
+
 # This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
     def on_error(self, status):
@@ -239,27 +265,33 @@ class StdOutListener(StreamListener):
         return True
 
 
+
+
 if __name__ == '__main__':
     # This handles Twitter authetification and the connection to Twitter Streaming API
-    l = StdOutListener()
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    stream = Stream(auth, l)
-    api = API(auth)
-    set_trends()
 
-    #print 'Argument List:', str(sys.argv)
+    print 'Argument List:', str(sys.argv)
 
-    runbot(TwitterBot('tshirthustle-config.txt'))
-    wait()
-    runbot(TwitterBot())
-    wait()
+    if len(sys.argv) > 1:
+        if sys.argv[2] == 'follow':
+            process_autofollow()
+        elif sys.argv[2] == 'unfollow':
+            process_unfollower()
+        elif sys.argv[2] == 'stream':
+            process_stream()
+        else:
+            process_stream()
+            process_autofollow()
 
-    runbot(TwitterBot('bwaters-config.txt'))
+    process_stream()
+    process_autofollow()
+
+
+
 
     # bot_unfollow(TwitterBot('tshirthustle-config.txt'))
     # bot_unfollow(TwitterBot())
 
     # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
-    stream.filter(track=track)
+
 
