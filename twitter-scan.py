@@ -195,9 +195,10 @@ def wait():
 
 def process_unfollower():
     config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
-    config = random.shuffle(config)
+    random.shuffle(config)
 
     for item in config:
+        print item + '\n'
         bot_unfollow(TwitterBot(item))
         wait()
 
@@ -206,9 +207,10 @@ def process_unfollower():
 
 def process_autofollow():
     config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
-    config = random.shuffle(config)
+    random.shuffle(config)
 
     for item in config:
+        print item+'\n'
         runbot(TwitterBot(item))
         wait()
 
