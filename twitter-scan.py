@@ -195,7 +195,8 @@ def wait():
 
 def process_unfollower():
     config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
-    bot_unfollow(TwitterBot())
+    config = random.shuffle(config)
+
     for item in config:
         bot_unfollow(TwitterBot(item))
         wait()
@@ -205,7 +206,8 @@ def process_unfollower():
 
 def process_autofollow():
     config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
-    runbot(TwitterBot())
+    config = random.shuffle(config)
+
     for item in config:
         runbot(TwitterBot(item))
         wait()
@@ -263,8 +265,6 @@ class StdOutListener(StreamListener):
 
         if time.time() - startTime >= timeBetween:
             if word_in_text('RT @', tweet['text']):
-                send_tweet(tweet["text"])
-            elif word_in_text('TSHIRTHUSTLE', tweet['text']):
                 send_tweet(tweet["text"])
         return True
 
