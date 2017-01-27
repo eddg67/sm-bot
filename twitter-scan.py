@@ -12,8 +12,8 @@ import random
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-gq2L0XN28Vaakbq7ydTOXM3FsYFEfrwxXuItTdg" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "MZhKeFpiEHZTDK4Fgno6hRXDKDmmW6GumDwFI7RfEfEEw" #
+access_token = "2871836001-pdXalinRzydJWPZywtgfhjIjPixwrPcW5JGDWcU" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "P3L5YBIMdV9DTJ8iCLGPrOIIs29ts7DNxkUpE3U29uJxV" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -136,7 +136,7 @@ def create_product_lk():
         product = doc
 
     link = 'http://tshirthustle.com/detail/' +product['productId'] + ' '
-    content = link + product['Name'] + ' '.join(top_trends)
+    content = link + product['Name'] + '  '.join(top_trends)
 
     return content
 
@@ -194,19 +194,23 @@ def wait():
 
 
 def process_unfollower():
-    config = ['tshirthustle-config.txt','bwaters-config.txt']
+    config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
     bot_unfollow(TwitterBot())
     for item in config:
         bot_unfollow(TwitterBot(item))
         wait()
 
+    exit()
+
 
 def process_autofollow():
-    config = ['tshirthustle-config.txt', 'bwaters-config.txt']
+    config = ['ab-config.txt', 'tshirthustle-config.txt', 'bwaters-config.txt']
     runbot(TwitterBot())
     for item in config:
         runbot(TwitterBot(item))
         wait()
+
+    exit()
 
 
 def process_stream():
@@ -284,15 +288,10 @@ if __name__ == '__main__':
             process_stream()
             process_autofollow()
 
-    process_stream()
     process_autofollow()
+    process_stream()
 
 
 
-
-    # bot_unfollow(TwitterBot('tshirthustle-config.txt'))
-    # bot_unfollow(TwitterBot())
-
-    # This line filter Twitter Streams to capture data by the keywords: 'tshirt', 'tees', 'tee-shirt', 'shirts'
 
 
