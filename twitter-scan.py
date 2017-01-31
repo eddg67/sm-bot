@@ -30,7 +30,7 @@ sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
 track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
-         'looking for tshirt', 'looking for t-shirt', 'gift idea', 'shopping 4 t-shirts', 'cos-play']
+         'looking for tshirt', 'looking for t-shirt', 'shopping 4 t-shirts']
 
 
 def db_connect():
@@ -146,7 +146,8 @@ def send_tweet(text):
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
-                'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ']
+                'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ',
+                'How about TSHIRTHUSTLE.COM ? ']
 
     if sent_product_link:
         text = prefixes[random.randrange(len(prefixes))] + text
@@ -290,7 +291,6 @@ if __name__ == '__main__':
             process_stream()
             process_autofollow()
 
-    process_autofollow()
     process_stream()
 
 
