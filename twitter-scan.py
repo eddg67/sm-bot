@@ -260,9 +260,6 @@ class StdOutListener(StreamListener):
                 elif tweet['favorited']:
                     tweets_data.append(tweet)
                     send_tweet(tweet["text"])
-                elif word_in_text('TSHIRTHUSTLE', tweet['text']):
-                    tweets_data.append(tweet)
-                    send_tweet(tweet["text"])
             except IndexError:
                 pass
 
