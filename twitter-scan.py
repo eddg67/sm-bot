@@ -12,8 +12,8 @@ import random
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-MnDQgeHBAZKajaXd0Ig7LIcNufYS1XqXpj3uXbz" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "XJ8Do9esghyeieRFfoxSLBhPoTkp9OsqpY9jftJ79ba12" #
+access_token = "2871836001-cxwItyCH1iD6UKhnCGloP2ay0mwLdeK9WZiC4yf" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "D78jhQT5nCIZRnUGsJIHTEHGuB2QrbTF4TyiXz6lDwoM5" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
