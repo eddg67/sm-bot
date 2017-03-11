@@ -9,6 +9,8 @@ import json
 import re
 import time
 import random
+import requests
+import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
@@ -136,7 +138,9 @@ def create_product_lk():
         product = doc
 
     link = 'http://tshirthustle.com/detail/' +product['productId'] + ' '
-    content = link + product['Name'] + '  '.join(top_trends)
+    content = link + product['Name'] + '  '+' '.join(top_trends)
+
+    tweet_image(product['Big Image'], content)
 
     return content
 
@@ -175,6 +179,19 @@ def send_tweet(text):
             exit()  # Tweet every 15 minutes
     return True
 
+def tweet_image(url, message):
+    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
+    filename = 'temp.jpg'
+    request = requests.get(url, stream=True)
+    if request.status_code == 200:
+        with open(filename, 'wb') as image:
+            for chunk in request:
+                image.write(chunk)
+
+        api.update_with_media(filename, status=message)
+        os.remove(filename)
+    else:
+        print("Unable to download image")
 
 def wait():
     # type: () -> object
@@ -275,7 +292,6 @@ if __name__ == '__main__':
     # This handles Twitter authetification and the connection to Twitter Streaming API
 
     print 'Argument List:', str(sys.argv)
-
     if len(sys.argv) > 1:
         print sys.argv[1]
         if sys.argv[1] == 'follow':
