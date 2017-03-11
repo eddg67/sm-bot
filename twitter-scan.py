@@ -188,6 +188,7 @@ def tweet_image(url, message):
             for chunk in request:
                 image.write(chunk)
 
+        message = message[:129]
         api.update_with_media(filename, status=message)
         os.remove(filename)
     else:
