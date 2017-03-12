@@ -14,8 +14,8 @@ import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-37tVfrFlwGq0gAhhbIfC4XOVoAMdePxrdgAgBnh" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "oJzpdl2hNzRSDhwGfZQ05rgS5IeLRJE8u8sbTHoXN8EW2" #
+access_token = "2871836001-f8SirouzfLn8q6KPKFKvJoQJMpqJj0EdrQRDvAy" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "AV1C2HgSd68Wn5ppJIVrQs5ok1pF3lJy67GaBxYu6qRwu" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -126,7 +126,7 @@ def extract_link(text):
 
 
 def create_product_lk():
-    global top_trends, client
+    global top_trends, client,sent_product_link
     client = db_connect()
     db = client.ss_products
     random_record = db.products.aggregate([
@@ -141,6 +141,8 @@ def create_product_lk():
     content = link + product['Name'] + '  '+' '.join(top_trends)
 
     tweet_image(product['Big Image'], content)
+    sent_product_link = True
+    increment()
 
     return content
 
@@ -158,6 +160,7 @@ def send_tweet(text):
     else:
         text = create_product_lk()
         sent_product_link = True
+        return True
 
     print len(text)
     text = text[:129]
