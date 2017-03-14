@@ -14,8 +14,8 @@ import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-f8SirouzfLn8q6KPKFKvJoQJMpqJj0EdrQRDvAy" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "AV1C2HgSd68Wn5ppJIVrQs5ok1pF3lJy67GaBxYu6qRwu" #
+access_token = "2871836001-tH8XB5R6z96ElIltjeQXMS6c8Z8s0PGptPmXiFj" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+access_token_secret = "YljtHkhFk8qUoDeq9vzuuV6O6qQS7xwmVPjUT8cDJMpkK" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
