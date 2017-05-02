@@ -14,7 +14,7 @@ import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-access_token = "2871836001-CFLnsrvVTK5vhk88h6m7iDcr5CUYUJvf67sZ40N" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
+#access_token = "2871836001-CFLnsrvVTK5vhk88h6m7iDcr5CUYUJvf67sZ40N" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
 access_token_secret = "5spBqKw9PXcpfaSwTwMG4qepCk3E5BGG2GFVY9mM68UO0" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
@@ -130,7 +130,15 @@ def create_product_lk():
     client = db_connect()
     db = client.ss_products
     random_record = db.products.aggregate([
-        {'$match': {'Name': re.compile('T Shirt', re.IGNORECASE)}},
+        {'$match': {'$and': [
+            {"Big Image": {'$ne': ""}},
+            {'$or': [
+            {'Name': re.compile('T Shirt', re.IGNORECASE)},
+            {'Name': re.compile('Tee', re.IGNORECASE)},
+            {'Name': re.compile('TShirt', re.IGNORECASE)},
+            {'Name': re.compile('T-Shirt', re.IGNORECASE)}
+        ]}]
+        }},
         {'$sample': {'size': 1}}
     ])
 
@@ -153,7 +161,7 @@ def send_tweet(text):
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
                 'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ',
-                'How about TSHIRTHUSTLE.COM ? ']
+                'How about TSHIRTHUSTLE.COM ? ', 'Maybe we can help TSHIRTHUSTLE.COM? ']
 
     if sent_product_link:
         text = prefixes[random.randrange(len(prefixes))] + text
@@ -182,6 +190,7 @@ def send_tweet(text):
             exit()  # Tweet every 15 minutes
     return True
 
+
 def tweet_image(url, message):
     global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
     filename = 'temp.jpg'
@@ -196,6 +205,7 @@ def tweet_image(url, message):
         os.remove(filename)
     else:
         print("Unable to download image")
+
 
 def wait():
     # type: () -> object
@@ -213,6 +223,23 @@ def wait():
         time.sleep(wait_time)
 
     return wait_time
+
+
+def get_token():
+    f = open('tshirthustle-config.txt', 'r')
+    token = f.readline().split(':')[1].strip()
+    f.close()
+
+    return token
+
+
+def get_secret():
+    f = open('tshirthustle-config.txt', 'r')
+    lines = f.readlines()
+    secret = lines[1].split(':')[1].strip()
+    f.close()
+
+    return secret
 
 
 def process_unfollower():
@@ -243,11 +270,11 @@ def process_stream():
     global api
     l = StdOutListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    auth.set_access_token(get_token(), get_secret())
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-    stream.filter(track=track)
+    #stream.filter(track=track)
 
 
 # This is a basic listener that just prints received tweets to stdout.
@@ -296,6 +323,7 @@ if __name__ == '__main__':
     # This handles Twitter authetification and the connection to Twitter Streaming API
 
     print 'Argument List:', str(sys.argv)
+
     if len(sys.argv) > 1:
         print sys.argv[1]
         if sys.argv[1] == 'follow':
