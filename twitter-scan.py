@@ -274,7 +274,7 @@ def process_stream():
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-    #stream.filter(track=track)
+    stream.filter(track=track)
 
 
 # This is a basic listener that just prints received tweets to stdout.
@@ -323,7 +323,6 @@ if __name__ == '__main__':
     # This handles Twitter authetification and the connection to Twitter Streaming API
 
     print 'Argument List:', str(sys.argv)
-
     if len(sys.argv) > 1:
         print sys.argv[1]
         if sys.argv[1] == 'follow':
