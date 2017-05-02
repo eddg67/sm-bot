@@ -15,7 +15,7 @@ import sys
 
 # Variables that contains the user credentials to access Twitter API
 #access_token = "2871836001-CFLnsrvVTK5vhk88h6m7iDcr5CUYUJvf67sZ40N" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-access_token_secret = "5spBqKw9PXcpfaSwTwMG4qepCk3E5BGG2GFVY9mM68UO0" #
+#access_token_secret = "5spBqKw9PXcpfaSwTwMG4qepCk3E5BGG2GFVY9mM68UO0" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -135,8 +135,7 @@ def create_product_lk():
             {'$or': [
             {'Name': re.compile('T Shirt', re.IGNORECASE)},
             {'Name': re.compile('Tee', re.IGNORECASE)},
-            {'Name': re.compile('TShirt', re.IGNORECASE)},
-            {'Name': re.compile('T-Shirt', re.IGNORECASE)}
+            {'Name': re.compile('TShirt', re.IGNORECASE)}
         ]}]
         }},
         {'$sample': {'size': 1}}
@@ -148,9 +147,12 @@ def create_product_lk():
     link = 'http://tshirthustle.com/detail/' +product['productId'] + ' '
     content = link + product['Name'] + '  '+' '.join(top_trends)
 
-    tweet_image(product['Big Image'], content)
-    sent_product_link = True
-    increment()
+    try:
+        tweet_image(product['Big Image'], content)
+        sent_product_link = True
+        increment()
+    except Exception:
+        pass
 
     return content
 
@@ -167,7 +169,6 @@ def send_tweet(text):
         text = prefixes[random.randrange(len(prefixes))] + text
     else:
         text = create_product_lk()
-        sent_product_link = True
         return True
 
     print len(text)
