@@ -14,8 +14,6 @@ import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-#access_token = "2871836001-CFLnsrvVTK5vhk88h6m7iDcr5CUYUJvf67sZ40N" #"793165501614678016-TCIFNBzYM70EH0AQTCObrHBUTAjKair"
-#access_token_secret = "5spBqKw9PXcpfaSwTwMG4qepCk3E5BGG2GFVY9mM68UO0" #
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
 tweet_count = 0
@@ -53,8 +51,8 @@ def runbot(my_bot):
     try:
         my_bot.auto_follow_followers()
 
-        my_bot.auto_fav("tshirthustle", count=5)
-        my_bot.auto_rt("tshirthustle", count=5)
+        my_bot.auto_fav("@tshirthustle", count=5)
+        my_bot.auto_rt("@tshirthustle", count=5)
 
         for x in range(0, 3):
             if last_index == index:
@@ -305,19 +303,17 @@ class StdOutListener(StreamListener):
             try:
                 if tweet['retweeted']:
                     tweets_data.append(tweet)
-                    send_tweet(tweet["text"])
+                    send_tweet(tweet["text"].replace('RT @', ''))
                 elif tweet['favorited']:
                     tweets_data.append(tweet)
-                    send_tweet(tweet["text"])
+                    send_tweet(tweet["text"].replace('RT @', ''))
             except IndexError:
                 pass
 
         if time.time() - startTime >= timeBetween:
             if word_in_text('RT @', tweet['text']):
-                send_tweet(tweet["text"])
+                send_tweet(tweet["text"].replace('RT @', ''))
         return True
-
-
 
 
 if __name__ == '__main__':
