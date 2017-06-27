@@ -51,8 +51,13 @@ def runbot(my_bot):
     try:
         my_bot.auto_follow_followers()
 
-        my_bot.auto_fav("@tshirthustle", count=5)
-        my_bot.auto_rt("@tshirthustle", count=5)
+        user = my_bot.BOT_CONFIG.get('TWITTER_HANDLE')
+
+        if user is 'tshirthustle':
+            my_bot.auto_rt("@funny", count=5)
+        else:
+            my_bot.auto_fav("@tshirthustle", count=5)
+            my_bot.auto_rt("@tshirthustle", count=5)
 
         for x in range(0, 3):
             if last_index == index:
@@ -312,7 +317,7 @@ class StdOutListener(StreamListener):
 
         if time.time() - startTime >= timeBetween:
             if word_in_text('RT @', tweet['text']):
-                send_tweet(tweet["text"].replace('RT @', ''))
+                send_tweet(tweet["text"].replace('RT ', ''))
         return True
 
 
