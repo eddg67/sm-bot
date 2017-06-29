@@ -14,8 +14,8 @@ import os
 import sys
 
 # Variables that contains the user credentials to access Twitter API
-consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N" #" "
-consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx" #
+consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N"  # " "
+consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx"  #
 tweet_count = 0
 tweet_sent_count = 0
 tweet_max = 3
@@ -29,7 +29,7 @@ timeBetween = 500
 sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
-track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
+track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle.com', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
          'looking for tshirt', 'looking for t-shirt', 'shopping 4 t-shirts']
 
 
@@ -54,7 +54,7 @@ def runbot(my_bot):
         user = my_bot.BOT_CONFIG.get('TWITTER_HANDLE')
 
         if user is 'tshirthustle':
-            my_bot.auto_rt("@funny", count=5)
+            my_bot.auto_rt("@tsh", count=5)
         else:
             my_bot.auto_fav("@tshirthustle", count=5)
             my_bot.auto_rt("@tshirthustle", count=5)
@@ -64,9 +64,10 @@ def runbot(my_bot):
                 index = random.randrange(len(track))
 
             my_bot.auto_follow(track[index])
-            my_bot.auto_rt(track[index], count=index)
-            my_bot.auto_fav(track[index], count=index)
-            wait()
+            if user != 'tshirthustle' and track[index] != 'tshirthustle.com':
+                my_bot.auto_rt(track[index], count=index)
+                my_bot.auto_fav(track[index], count=index)
+                wait()
 
     except IndexError:
         pass
@@ -129,17 +130,17 @@ def extract_link(text):
 
 
 def create_product_lk():
-    global top_trends, client,sent_product_link
+    global top_trends, client, sent_product_link
     client = db_connect()
     db = client.ss_products
     random_record = db.products.aggregate([
         {'$match': {'$and': [
             {"Big Image": {'$ne': ""}},
             {'$or': [
-            {'Name': re.compile('T Shirt', re.IGNORECASE)},
-            {'Name': re.compile('Tee', re.IGNORECASE)},
-            {'Name': re.compile('TShirt', re.IGNORECASE)}
-        ]}]
+                {'Name': re.compile('T Shirt', re.IGNORECASE)},
+                {'Name': re.compile('Tee', re.IGNORECASE)},
+                {'Name': re.compile('TShirt', re.IGNORECASE)}
+            ]}]
         }},
         {'$sample': {'size': 1}}
     ])
@@ -147,8 +148,8 @@ def create_product_lk():
     for doc in random_record:
         product = doc
 
-    link = 'http://tshirthustle.com/detail/' +product['productId'] + ' '
-    content = link + product['Name'] + '  '+' '.join(top_trends)
+    link = 'http://tshirthustle.com/detail/' + product['productId'] + ' '
+    content = link + product['Name'] + '  ' + ' '.join(top_trends)
 
     try:
         tweet_image(product['Big Image'], content)
@@ -161,9 +162,9 @@ def create_product_lk():
 
 
 def send_tweet(text):
-    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max,api
+    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
 
-    prefixes = ['Sounds Like TSHIRTHUSTLE.COM ','Check out http://tshirthustle.com ',
+    prefixes = ['Sounds Like TSHIRTHUSTLE.COM ', 'Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
                 'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ',
                 'How about TSHIRTHUSTLE.COM ? ', 'Maybe we can help TSHIRTHUSTLE.COM? ']
@@ -190,7 +191,7 @@ def send_tweet(text):
         startTime = time.time()
         if tweet_count >= tweet_max:
             fileHandle.close()
-            #bot_unfollow(TwitterBot())
+            # bot_unfollow(TwitterBot())
             exit()  # Tweet every 15 minutes
     return True
 
@@ -263,7 +264,7 @@ def process_autofollow():
     random.shuffle(config)
 
     for item in config:
-        print item+'\n'
+        print item + '\n'
         runbot(TwitterBot(item))
         wait()
 
@@ -295,7 +296,7 @@ class StdOutListener(StreamListener):
 
         print data
 
-        fileHandle.write(data+'\n')
+        fileHandle.write(data + '\n')
 
         tweets_data = []
         tweet = json.loads(data)
@@ -338,8 +339,3 @@ if __name__ == '__main__':
             process_autofollow()
 
     process_stream()
-
-
-
-
-
