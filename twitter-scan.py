@@ -279,7 +279,7 @@ def process_stream():
     stream = Stream(auth, l)
     api = API(auth)
     set_trends()
-    stream.filter(track=track, language='en')
+    stream.filter(track=track, languages=['en'])
 
 
 # This is a basic listener that just prints received tweets to stdout.
