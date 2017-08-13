@@ -9,7 +9,6 @@ import json
 import re
 import time
 import random
-import requests
 import os
 import sys
 
