@@ -13,6 +13,7 @@ import requests
 import os
 import sys
 
+
 # Variables that contains the user credentials to access Twitter API
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N"  # " "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx"  #
@@ -29,8 +30,9 @@ timeBetween = 500
 sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
-track = ['tshirt', 'tee-shirt', 'shirts', 'tshirthustle.com', 'shopping for t-shirt', 'Shopping For Tee', 'need tees',
-         'looking for tshirt', 'looking for t-shirt', 'shopping 4 t-shirts']
+track = ['shopping for t-shirt', 'Shopping For Tee', 'need tees', 'need new tees', 'need some new tee'
+         'looking for tshirt', 'looking for t-shirt', 'shopping 4 t-shirts', 'need new t-shirt',
+         'tshirt shopping', 'tee shopping', 'tshirt', 'tee']
 
 
 def db_connect():
@@ -129,7 +131,15 @@ def extract_link(text):
     return ''
 
 
-def create_product_lk():
+def extract_username(text):
+    regex = r'@[\w]+'
+    match = re.search(regex, text)
+    if match:
+        return match.group()
+    return ''
+
+
+def send_product_lk():
     global top_trends, client, sent_product_link
     client = db_connect()
     db = client.ss_products
@@ -161,7 +171,7 @@ def create_product_lk():
     return content
 
 
-def send_tweet(text):
+def send_tweet(tweet):
     global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ', 'Check out http://tshirthustle.com ',
@@ -169,7 +179,13 @@ def send_tweet(text):
                 'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ',
                 'How about TSHIRTHUSTLE.COM ? ', 'Maybe we can help TSHIRTHUSTLE.COM? ']
 
-    text = create_product_lk()
+    text = tweet["text"].replace('RT @', '')
+    user = extract_username(text)
+    t_id = tweet["id_str"]
+
+    print(text)
+    print(user)
+    print(t_id)
 
     print len(text)
     text = text[:129]
@@ -181,7 +197,7 @@ def send_tweet(text):
     else:
         print 'Sending Tweet\n'
         tweets_sent_text.append(text)
-        api.update_status(status=text)
+       # api.update_status(status=text)
         increment()
         wait()
         startTime = time.time()
@@ -305,16 +321,18 @@ class StdOutListener(StreamListener):
             try:
                 if tweet['retweeted']:
                     tweets_data.append(tweet)
-                    send_tweet(tweet["text"].replace('RT @', ''))
+                    send_product_lk()
+                    #send_tweet(tweet)
                 elif tweet['favorited']:
                     tweets_data.append(tweet)
-                    send_tweet(tweet["text"].replace('RT @', ''))
+                    send_product_lk()
+                    #send_tweet(tweet)
             except IndexError:
                 pass
 
         if time.time() - startTime >= timeBetween:
             if word_in_text('RT @', tweet['text']):
-                send_tweet(tweet["text"].replace('RT ', ''))
+                send_product_lk()
         return True
 
 
