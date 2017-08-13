@@ -169,11 +169,7 @@ def send_tweet(text):
                 'TSHIRTHUSTLE.COM Sale Today ', 'TSHIRTHUSTLE.COM Anyone? ', 'Great Tees http://tshirthustle.com ',
                 'How about TSHIRTHUSTLE.COM ? ', 'Maybe we can help TSHIRTHUSTLE.COM? ']
 
-    if sent_product_link:
-        text = prefixes[random.randrange(len(prefixes))] + text
-    else:
-        text = create_product_lk()
-        return True
+    text = create_product_lk()
 
     print len(text)
     text = text[:129]
