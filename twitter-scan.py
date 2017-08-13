@@ -13,7 +13,6 @@ import requests
 import os
 import sys
 
-
 # Variables that contains the user credentials to access Twitter API
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N"  # " "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx"  #
@@ -22,6 +21,7 @@ tweet_sent_count = 0
 tweet_max = 3
 tweets_sent_text = []
 top_trends = []
+product_ids = []
 api = ""
 startTime = time.time()
 fileHandle = open('tweets-dialog.txt', 'w')
@@ -30,9 +30,9 @@ timeBetween = 500
 sent_product_link = False
 SCREEN_NAME = "tshirthustle"
 
-track = ['shopping for t-shirt', 'Shopping For Tee', 'need tees', 'need new tees', 'need some new tee'
+track = ['shopping for t-shirt', 'Shopping For Tee', 'need tees', 'need new tees', 'need some new tee',
          'looking for tshirt', 'looking for t-shirt', 'shopping 4 t-shirts', 'need new t-shirt',
-         'tshirt shopping', 'tee shopping', 'tshirt', 'tee']
+         'tshirt shopping', 'tee shopping']
 
 
 def db_connect():
@@ -157,9 +157,10 @@ def send_product_lk():
 
     for doc in random_record:
         product = doc
-
-    link = 'http://tshirthustle.com/detail/' + product['productId'] + ' '
+    if product['productId'] not in product_ids:
+        link = 'http://tshirthustle.com/detail/' + product['productId'] + ' '
     content = link + product['Name'] + '  ' + ' '.join(top_trends)
+    product_ids.append(product['productId'])
 
     try:
         tweet_image(product['Big Image'], content)
@@ -197,7 +198,7 @@ def send_tweet(tweet):
     else:
         print 'Sending Tweet\n'
         tweets_sent_text.append(text)
-       # api.update_status(status=text)
+        # api.update_status(status=text)
         increment()
         wait()
         startTime = time.time()
@@ -322,11 +323,11 @@ class StdOutListener(StreamListener):
                 if tweet['retweeted']:
                     tweets_data.append(tweet)
                     send_product_lk()
-                    #send_tweet(tweet)
+                    # send_tweet(tweet)
                 elif tweet['favorited']:
                     tweets_data.append(tweet)
                     send_product_lk()
-                    #send_tweet(tweet)
+                    # send_tweet(tweet)
             except IndexError:
                 pass
 
