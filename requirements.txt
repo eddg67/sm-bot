@@ -1,0 +1,6 @@
+facebook_sdk==2.0.0
+pymongo==3.3.1
+TwitterFollowBot==2.0.2
+facebook==0.0
+requests
+tweepy==3.5.0
