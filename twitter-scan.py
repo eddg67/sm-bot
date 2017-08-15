@@ -11,13 +11,14 @@ import time
 import random
 import os
 import sys
+import requests
 
 # Variables that contains the user credentials to access Twitter API
 consumer_key = "wdaBHumoamxEdAjAmEc4KYo8N"  # " "
 consumer_secret = "6zu64D3Lg0EGPxnhyj5OxMuHX6wzQAFWW9US2xF8NYSqdcEfKx"  #
 tweet_count = 0
 tweet_sent_count = 0
-tweet_max = 3
+tweet_max = 2
 tweets_sent_text = []
 top_trends = []
 product_ids = []
@@ -140,6 +141,7 @@ def extract_username(text):
 
 def send_product_lk():
     global top_trends, client, sent_product_link
+    content = ''
     client = db_connect()
     db = client.ss_products
     random_record = db.products.aggregate([
@@ -158,15 +160,14 @@ def send_product_lk():
         product = doc
     if product['productId'] not in product_ids:
         link = 'http://tshirthustle.com/detail/' + product['productId'] + ' '
-    content = link + product['Name'] + '  ' + ' '.join(top_trends)
-    product_ids.append(product['productId'])
-
-    try:
-        tweet_image(product['Big Image'], content)
-        sent_product_link = True
-        increment()
-    except Exception:
-        pass
+        content = link + product['Name'] + '  ' + ' '.join(top_trends)
+        product_ids.append(product['productId'])
+        try:
+            tweet_image(product['Big Image'], content)
+            sent_product_link = True
+            increment()
+        except Exception:
+            pass
 
     return content
 
@@ -187,15 +188,19 @@ def send_tweet(tweet):
     print(user)
     print(t_id)
 
-    print len(text)
+    print
+    len(text)
     text = text[:129]
-    print len(text)
+    print
+    len(text)
 
     if text in tweets_sent_text:
-        print 'Duplicate Tweet Caught!\n'
+        print
+        'Duplicate Tweet Caught!\n'
         return False
     else:
-        print 'Sending Tweet\n'
+        print
+        'Sending Tweet\n'
         tweets_sent_text.append(text)
         # api.update_status(status=text)
         increment()
@@ -264,7 +269,8 @@ def process_unfollower():
     random.shuffle(config)
 
     for item in config:
-        print item + '\n'
+        print
+        item + '\n'
         bot_unfollow(TwitterBot(item))
         wait()
 
@@ -276,7 +282,8 @@ def process_autofollow():
     random.shuffle(config)
 
     for item in config:
-        print item + '\n'
+        print
+        item + '\n'
         runbot(TwitterBot(item))
         wait()
 
@@ -298,15 +305,18 @@ def process_stream():
 class StdOutListener(StreamListener):
     def on_error(self, status):
         fileHandle.close()
-        print status
+        print
+        status
 
     def on_data(self, data):
 
         # Reading Tweets
-        print 'Reading Tweets\n'
-        print time.time() - startTime
+        print
+        'Reading Tweets\n'
+        print
+        time.time() - startTime
 
-        print data
+        print(data)
 
         fileHandle.write(data + '\n')
 
@@ -339,9 +349,11 @@ class StdOutListener(StreamListener):
 if __name__ == '__main__':
     # This handles Twitter authetification and the connection to Twitter Streaming API
 
-    print 'Argument List:', str(sys.argv)
+    print
+    'Argument List:', str(sys.argv)
     if len(sys.argv) > 1:
-        print sys.argv[1]
+        print
+        sys.argv[1]
         if sys.argv[1] == 'follow':
             process_autofollow()
         elif sys.argv[1] == 'unfollow':
