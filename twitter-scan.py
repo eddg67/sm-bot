@@ -24,7 +24,6 @@ top_trends = []
 product_ids = []
 api = ""
 startTime = time.time()
-fileHandle = open('tweets-dialog.txt', 'w')
 client = False
 timeBetween = 500
 sent_product_link = False
@@ -173,7 +172,7 @@ def send_product_lk():
 
 
 def send_tweet(tweet):
-    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
+    global tweets_sent_text, startTime, sent_product_link, tweet_max, api
 
     prefixes = ['Sounds Like TSHIRTHUSTLE.COM ', 'Check out http://tshirthustle.com ',
                 'Have U Checked TSHIRTHUSTLE.COM? ', 'Visit TSHIRTHUSTLE.COM Today ',
@@ -207,14 +206,13 @@ def send_tweet(tweet):
         wait()
         startTime = time.time()
         if tweet_count >= tweet_max:
-            fileHandle.close()
             # bot_unfollow(TwitterBot())
             exit()  # Tweet every 15 minutes
     return True
 
 
 def tweet_image(url, message):
-    global tweets_sent_text, startTime, fileHandle, sent_product_link, tweet_max, api
+    global tweets_sent_text, startTime, sent_product_link, tweet_max, api
     filename = 'temp.jpg'
     request = requests.get(url, stream=True)
     if request.status_code == 200:
@@ -304,7 +302,6 @@ def process_stream():
 # This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
     def on_error(self, status):
-        fileHandle.close()
         print
         status
 
@@ -317,8 +314,6 @@ class StdOutListener(StreamListener):
         time.time() - startTime
 
         print(data)
-
-        fileHandle.write(data + '\n')
 
         tweets_data = []
         tweet = json.loads(data)
@@ -341,8 +336,7 @@ class StdOutListener(StreamListener):
                 pass
 
         if time.time() - startTime >= timeBetween:
-            if word_in_text('RT @', tweet['text']):
-                send_product_lk()
+            send_product_lk()
         return True
 
 
